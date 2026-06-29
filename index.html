@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyMate AI – Your Intelligent Study Coach</title>
+  <meta name="description" content="Explain topics, build personalized study plans, test your knowledge with SRS flashcards, and focus with Pomodoro timers.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">S</div>
+        <span class="brand-name">StudyMate AI</span>
+      </div>
+      
+      <nav class="nav-menu">
+        <li class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>Dashboard</span>
+        </li>
+        <li class="nav-item" data-view="explainer" id="nav-explainer">
+          <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Concept Explainer</span>
+        </li>
+        <li class="nav-item" data-view="planner" id="nav-planner">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Study Planner</span>
+        </li>
+        <li class="nav-item" data-view="quizzes" id="nav-quizzes">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span>Quiz & Flashcards</span>
+        </li>
+        <li class="nav-item" data-view="timer" id="nav-timer">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Focus Timer</span>
+        </li>
+        <li class="nav-item" data-view="buddy" id="nav-buddy">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Study Buddy</span>
+        </li>
+        <li class="nav-item" data-view="analytics" id="nav-analytics">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics & Logs</span>
+        </li>
+        <li class="nav-item" data-view="settings" id="nav-settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </li>
+      </nav>
+
+      <!-- Sidebar profile summary -->
+      <div class="sidebar-profile">
+        <div class="profile-avatar" id="sidebar-avatar">FS</div>
+        <div class="profile-info">
+          <span class="profile-name" id="sidebar-name">Future Scholar</span>
+          <span class="profile-streak"><span id="sidebar-streak-icon">🔥</span> <span id="sidebar-streak-count">0</span> Day Streak</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-title">
+          <h2 id="current-view-title">Dashboard</h2>
+        </div>
+        <div class="header-actions">
+          <div class="streak-badge">
+            <span>🔥</span>
+            <span id="header-streak-text">0 Day Streak</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 1. DASHBOARD VIEW -->
+      <section id="view-dashboard" class="view-panel active">
+        <!-- Top statistics row -->
+        <div class="grid-3 mb-6">
+          <div class="glass-card stat-card">
+            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.2); color: var(--primary);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-details">
+              <h4>Total Focus Time</h4>
+              <p id="stat-total-time">0 mins</p>
+            </div>
+          </div>
+          
+          <div class="glass-card stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="stat-details">
+              <h4>Plan Completion</h4>
+              <p id="stat-plan-rate">0%</p>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.2); color: var(--secondary);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="stat-details">
+              <h4>Quiz Accuracy</h4>
+              <p id="stat-quiz-accuracy">0%</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Left: Study recommendation & Quick coach prompt -->
+          <div class="flex-column gap-24">
+            <div class="glass-card highlight mb-6">
+              <h3 class="text-lg font-bold mb-2 text-purple-400">💡 Coach Recommendation</h3>
+              <p id="dashboard-recommendation-text" class="text-sm text-slate-300 leading-relaxed">
+                Welcome to StudyMate AI! Start by configuring your profile in Settings, then enter your first topic in the Concept Explainer or generate a Study Plan to build your custom schedule.
+              </p>
+              <div class="mt-4 flex gap-12">
+                <button class="btn-primary" id="btn-rec-action">Let's Explain</button>
+              </div>
+            </div>
+
+            <!-- Quick AI query box -->
+            <div class="glass-card">
+              <h3 class="text-base font-bold mb-3">Ask Coach Anything</h3>
+              <div class="flex gap-12">
+                <input type="text" id="quick-coach-input" class="text-input flex-grow" placeholder="Type a topic (e.g., Photosynthesis)...">
+                <button class="btn-primary" id="btn-quick-coach-send" style="padding: 12px 18px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Weekly hours chart & active targets -->
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-2">Focus Activity (Last 7 Days)</h3>
+            <div class="chart-container-svg">
+              <svg id="dashboard-svg-chart" viewBox="0 0 400 180" width="100%" height="100%">
+                <!-- Background Grid lines -->
+                <line x1="40" y1="20" x2="380" y2="20" stroke="rgba(255,255,255,0.05)"/>
+                <line x1="40" y1="70" x2="380" y2="70" stroke="rgba(255,255,255,0.05)"/>
+                <line x1="40" y1="120" x2="380" y2="120" stroke="rgba(255,255,255,0.05)"/>
+                <line x1="40" y1="150" x2="380" y2="150" stroke="rgba(255,255,255,0.1)"/>
+                <!-- Chart bars will be injected here by app.js -->
+              </svg>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-700/50">
+              <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Today's Study Plan Tasks</h4>
+              <div id="dashboard-today-tasks" class="max-h-160 overflow-y-auto">
+                <p class="text-sm text-slate-500 italic">No plans created yet. Go to Study Planner to get started!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. CONCEPT EXPLAINER VIEW -->
+      <section id="view-explainer" class="view-panel">
+        <div class="grid-2">
+          <!-- Inputs Column -->
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-4">Explain difficult concepts</h3>
+            
+            <div class="input-group">
+              <label class="input-label" for="explainer-topic">Topic or Topic Notes</label>
+              <input type="text" id="explainer-topic" class="text-input" placeholder="e.g., Photosynthesis, Newton's Laws, Binary Search...">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="explainer-style">Explanation Style</label>
+              <select id="explainer-style" class="select-input">
+                <option value="ELI5">Explain like I'm 5 (ELI5)</option>
+                <option value="Analogy">Analogy & Metaphors</option>
+                <option value="Deep-Dive" selected>Concept Deep-Dive (Advanced)</option>
+                <option value="Summary">Key Summary Bullets</option>
+              </select>
+            </div>
+
+            <button class="btn-primary w-full mt-4" id="btn-explain-generate">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              Generate Explanation
+            </button>
+          </div>
+
+          <!-- Output Column -->
+          <div class="glass-card" style="display: flex; flex-direction: column; min-height: 320px;">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-bold">Coach Explanation</h3>
+              <button class="btn-secondary" id="btn-explainer-copy" style="padding: 6px 12px; font-size: 12px;">Copy</button>
+            </div>
+
+            <!-- Result output body -->
+            <div id="explainer-output-container" class="flex-grow overflow-y-auto pr-2 text-slate-300 leading-relaxed text-sm">
+              <p class="italic text-slate-500">Input a topic on the left and hit generate to view the AI explanation.</p>
+            </div>
+
+            <!-- Loader template hidden by default -->
+            <div id="explainer-loader" class="skeleton-loading" style="display: none;">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line half"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+            </div>
+
+            <!-- Action panel shown after generation -->
+            <div id="explainer-actions-row" class="mt-4 pt-4 border-t border-slate-700/50 flex gap-12" style="display: none;">
+              <button class="btn-secondary flex-grow" id="btn-explainer-create-plan" style="font-size: 13px;">Create Study Plan</button>
+              <button class="btn-secondary flex-grow" id="btn-explainer-create-quiz" style="font-size: 13px;">Test with Quiz</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. STUDY PLANNER VIEW -->
+      <section id="view-planner" class="view-panel">
+        <div class="grid-2">
+          <!-- Creation settings -->
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-4">Create Study Plan</h3>
+            <div class="input-group">
+              <label class="input-label" for="planner-subject">Subject or Topic</label>
+              <input type="text" id="planner-subject" class="text-input" placeholder="e.g. World War II History, Python Lists...">
+            </div>
+            
+            <div class="grid-2 gap-12" style="grid-template-columns: 1fr 1fr; margin-bottom: 16px;">
+              <div class="input-group" style="margin-bottom: 0;">
+                <label class="input-label" for="planner-days">Days available</label>
+                <input type="number" id="planner-days" class="text-input" min="1" max="30" value="3">
+              </div>
+              <div class="input-group" style="margin-bottom: 0;">
+                <label class="input-label" for="planner-hours">Hours per day</label>
+                <input type="number" id="planner-hours" class="text-input" min="1" max="12" value="2">
+              </div>
+            </div>
+
+            <button class="btn-primary w-full mt-4" id="btn-plan-generate">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Generate Schedule
+            </button>
+
+          <!-- Generated plan displaying checklists -->
+          <div class="glass-card" style="display: flex; flex-direction: column; min-height: 360px;">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-bold">Your Schedules</h3>
+              <div id="planner-select-wrapper" style="display: none;">
+                <select id="planner-select-plan" class="select-input" style="padding: 6px 12px; font-size: 13px;"></select>
+              </div>
+            </div>
+
+            <div id="planner-loader" class="skeleton-loading" style="display: none;">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line half"></div>
+              <div class="skeleton-line"></div>
+            </div>
+
+            <div id="planner-output-container" class="flex-grow overflow-y-auto pr-2">
+              <p class="italic text-slate-500">Create a schedule using the options pane on the left.</p>
+            </div>
+            
+            <div id="planner-actions-row" class="mt-4 pt-4 border-t border-slate-700/50 flex justify-between" style="display: none;">
+              <span id="planner-progress-percent" class="text-sm font-semibold text-slate-400">Progress: 0%</span>
+              <button id="btn-planner-delete" class="text-red-400 hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-semibold">Delete Plan</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. QUIZ & FLASHCARDS VIEW -->
+      <section id="view-quizzes" class="view-panel">
+        <!-- View selection tabs inside subheader -->
+        <div class="flex gap-16 mb-6" style="border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
+          <button class="btn-secondary active" id="btn-subtab-quiz" style="padding: 8px 16px; border-radius: 20px;">Quizzes</button>
+          <button class="btn-secondary" id="btn-subtab-flashcards" style="padding: 8px 16px; border-radius: 20px;">Flashcards (SRS)</button>
+        </div>
+
+        <!-- 4A. QUIZ TAB PANEL -->
+        <div id="quiz-panel">
+          <div class="grid-2">
+            <!-- Setup Form -->
+            <div class="glass-card">
+              <h3 class="text-lg font-bold mb-4">Generate MCQ Quiz</h3>
+              <div class="input-group">
+                <label class="input-label" for="quiz-topic">Quiz Topic</label>
+                <input type="text" id="quiz-topic" class="text-input" placeholder="e.g. Photosynthesis, Python Loops, Organic Chemistry...">
+              </div>
+              <button class="btn-primary w-full mt-4" id="btn-quiz-generate">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Create Quiz
+              </button>
+            </div>
+
+            <!-- Quiz Play Board -->
+            <div class="glass-card" style="min-height: 320px; display: flex; flex-direction: column;">
+              <div id="quiz-loader" class="skeleton-loading" style="display: none; margin-top: auto; margin-bottom: auto;">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line half"></div>
+                <div class="skeleton-line"></div>
+              </div>
+
+              <div id="quiz-play-board" style="display: none; flex-grow: 1;">
+                <div class="flex justify-between items-center mb-4">
+                  <span id="quiz-question-number" class="text-sm font-semibold text-purple-400">Question 1 of 3</span>
+                  <span id="quiz-timer" class="text-sm font-semibold text-slate-400">Score: 0/0</span>
+                </div>
+                <h4 id="quiz-question-text" class="text-base font-semibold leading-relaxed mb-4">Question detail goes here?</h4>
+                <div id="quiz-options-wrapper" class="options-list">
+                  <!-- options injected here -->
+                </div>
+              </div>
+
+              <div id="quiz-result-board" style="display: none; text-align: center; margin-top: auto; margin-bottom: auto; padding: 24px;">
+                <h4 class="text-2xl font-bold text-emerald-400 mb-2">Quiz Complete!</h4>
+                <p id="quiz-result-score" class="text-3xl font-black mb-4">3 / 3 (100%)</p>
+                <p id="quiz-result-remark" class="text-sm text-slate-400 mb-6">Excellent job! You have fully mastered this section.</p>
+                <button class="btn-primary" id="btn-quiz-restart">Try Another</button>
+              </div>
+
+              <div id="quiz-intro-board" class="text-center" style="margin-top: auto; margin-bottom: auto;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" class="mb-4" style="margin: 0 auto 16px auto;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <h4 class="text-base font-semibold">Ready to Test Your Knowledge?</h4>
+                <p class="text-xs text-slate-400 max-w-280 mx-auto mt-2">Generate a quick multiple choice test. Scores will be logged in Analytics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4B. FLASHCARDS TAB PANEL (SRS) -->
+        <div id="flashcards-panel" style="display: none;">
+          <div class="grid-2">
+            <!-- Setup & Quick Adding -->
+            <div class="glass-card">
+              <h3 class="text-lg font-bold mb-4">Create Flashcards</h3>
+              
+              <div class="input-group">
+                <label class="input-label" for="fc-add-subject">Subject</label>
+                <input type="text" id="fc-add-subject" class="text-input" placeholder="e.g. Physics, Chemistry, German...">
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="fc-add-question">Front (Question)</label>
+                <input type="text" id="fc-add-question" class="text-input" placeholder="What is the speed of light?">
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="fc-add-answer">Back (Answer)</label>
+                <textarea id="fc-add-answer" class="textarea-input" rows="2" placeholder="Approx 299,792,458 meters per second."></textarea>
+              </div>
+
+              <button class="btn-primary w-full mt-4" id="btn-fc-add">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Flashcard
+              </button>
+            </div>
+
+            <!-- Flip Deck Board -->
+            <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 420px;">
+              <div class="flex justify-between items-center">
+                <span id="fc-count-due" class="tag-badge orange">SRS DUE: 0 CARDS</span>
+                <span id="fc-deck-index" class="text-sm font-semibold text-slate-400">Card 0 of 0</span>
+              </div>
+
+              <!-- Flip Wrapper -->
+              <div class="flashcard-wrapper" id="flashcard-element">
+                <div class="flashcard-inner">
+                  <!-- Front of Card -->
+                  <div class="flashcard-front">
+                    <span class="tag-badge violet mb-4" id="fc-card-subject">Physics</span>
+                    <p id="fc-card-question" class="text-base font-bold text-center leading-relaxed">Is there any card available?</p>
+                    <span class="text-xs text-slate-500 mt-6 animate-pulse">Click card to Flip</span>
+                  </div>
+                  <!-- Back of Card -->
+                  <div class="flashcard-back">
+                    <span class="tag-badge pink mb-4">Answer</span>
+                    <p id="fc-card-answer" class="text-sm text-center leading-relaxed text-slate-200">Flip card to find out.</p>
+                    <span class="text-xs text-slate-500 mt-6">Click card to Flip Back</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SRS buttons row (only shown when flipped) -->
+              <div id="fc-srs-panel" class="srs-buttons" style="visibility: hidden;">
+                <button class="btn-secondary bg-red-950/20 text-red-400 border-red-900/30" id="btn-srs-again" style="padding: 8px 16px; font-size: 13px;">Again</button>
+                <button class="btn-secondary bg-yellow-950/20 text-yellow-400 border-yellow-900/30" id="btn-srs-hard" style="padding: 8px 16px; font-size: 13px;">Hard</button>
+                <button class="btn-primary bg-emerald-700 hover:bg-emerald-600 border-none" id="btn-srs-easy" style="padding: 8px 16px; font-size: 13px;">Easy (Mastered)</button>
+              </div>
+
+              <div id="fc-empty-board" class="text-center" style="display: none; margin-top: auto; margin-bottom: auto; padding: 24px;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2" class="mb-4" style="margin:0 auto 16px auto;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <h4 class="text-base font-semibold">All Caught Up! 🎉</h4>
+                <p class="text-xs text-slate-400 mt-2">No flashcards are due for review. Generate new ones from the AI Explainer, or manually add cards on the left.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. POMODORO FOCUS TIMER VIEW -->
+      <section id="view-timer" class="view-panel">
+        <div class="grid-2">
+          <!-- Timer Display Core -->
+          <div class="glass-card flex-column items-center justify-center">
+            <h3 class="text-lg font-bold text-center mb-6">Focus Timer</h3>
+            
+            <div class="timer-container">
+              <div class="timer-circle-wrap">
+                <!-- SVG countdown ring -->
+                <svg width="240" height="240">
+                  <circle cx="120" cy="120" r="110" stroke="var(--border-light)" stroke-width="6" fill="transparent" />
+                  <circle id="timer-progress-ring" class="progress-ring-circle" cx="120" cy="120" r="110" stroke="var(--primary)" stroke-width="6" fill="transparent" stroke-dasharray="691" stroke-dashoffset="0" />
+                </svg>
+                <div class="timer-display">
+                  <div class="timer-time" id="timer-countdown">25:00</div>
+                  <div class="timer-status" id="timer-mode">Study Time</div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="flex gap-16">
+                <button class="btn-secondary" id="btn-timer-reset" style="padding: 10px 16px;">Reset</button>
+                <button class="btn-primary" id="btn-timer-toggle" style="padding: 10px 32px; width: 120px;">Start</button>
+                <button class="btn-secondary" id="btn-timer-skip" style="padding: 10px 16px;">Skip</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ambient Music Player -->
+          <div class="glass-card">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-bold">Focus Ambient Audio</h3>
+              <span class="tag-badge cyan" id="audio-active-badge">SYNTHETIC GENERATOR</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-6">Uses native Web Audio synthesis to generate continuous offline ambient focus tracks instantly.</p>
+
+            <div class="sound-option" data-sound="off" id="sound-off">
+              <div class="flex items-center gap-12">
+                <span>🔇</span>
+                <span class="text-sm font-semibold">Silent Mode</span>
+              </div>
+              <span class="text-xs text-slate-500">Muted</span>
+            </div>
+
+            <div class="sound-option" data-sound="rain" id="sound-rain">
+              <div class="flex items-center gap-12">
+                <span>🌧️</span>
+                <span class="text-sm font-semibold">Gentle Rainstorm</span>
+              </div>
+              <span class="text-xs text-slate-500">White Noise + Lowpass</span>
+            </div>
+
+            <div class="sound-option" data-sound="lofi" id="sound-lofi">
+              <div class="flex items-center gap-12">
+                <span>🎵</span>
+                <span class="text-sm font-semibold">Binaural Focus Drone</span>
+              </div>
+              <span class="text-xs text-slate-500">40Hz Alpha Frequency</span>
+            </div>
+
+            <div class="sound-option" data-sound="forest" id="sound-forest">
+              <div class="flex items-center gap-12">
+                <span>🌳</span>
+                <span class="text-sm font-semibold">Deep Forest Wind</span>
+              </div>
+              <span class="text-xs text-slate-500">Brownian Sleep Noise</span>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-slate-700/50">
+              <div class="input-group">
+                <label class="input-label" for="timer-subject-log">Link current timer to subject (Optional)</label>
+                <input type="text" id="timer-subject-log" class="text-input" placeholder="e.g. Physics Newton's Laws">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. STUDY BUDDY CHAT VIEW -->
+      <section id="view-buddy" class="view-panel">
+        <div class="grid-2" style="grid-template-columns: 280px 1fr;">
+          <!-- Left: Buddy Selection -->
+          <div class="flex-column gap-16">
+            <h3 class="text-lg font-bold mb-4">Choose Study Buddy</h3>
+            
+            <div class="glass-card buddy-select-card active" data-buddy="emma" style="cursor: pointer; margin-bottom: 12px; border-color: var(--primary);">
+              <div class="flex items-center gap-12 mb-2">
+                <div class="profile-avatar" style="background: linear-gradient(135deg, var(--secondary), var(--primary));">EE</div>
+                <div>
+                  <h4 class="text-sm font-bold">Encouraging Emma</h4>
+                  <span class="text-xs text-pink-400 font-semibold">Friendly Coach</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">Emma focuses on positive reinforcement, high-energy motivation, and uses emojis.</p>
+            </div>
+
+            <div class="glass-card buddy-select-card" data-buddy="alex" style="cursor: pointer; margin-bottom: 12px;">
+              <div class="flex items-center gap-12 mb-2">
+                <div class="profile-avatar" style="background: linear-gradient(135deg, var(--primary), var(--accent-cyan));">AA</div>
+                <div>
+                  <h4 class="text-sm font-bold">Analytical Alex</h4>
+                  <span class="text-xs text-cyan-400 font-semibold">Logical Evaluator</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">Alex demands strict definitions, tests formula constraints, and values core facts.</p>
+            </div>
+
+            <div class="glass-card buddy-select-card" data-buddy="sam" style="cursor: pointer;">
+              <div class="flex items-center gap-12 mb-2">
+                <div class="profile-avatar" style="background: linear-gradient(135deg, var(--border-glow), var(--text-muted));">SS</div>
+                <div>
+                  <h4 class="text-sm font-bold">Skeptical Sam</h4>
+                  <span class="text-xs text-orange-400 font-semibold">Devil's Advocate</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">Sam tests for edge cases, queries exceptions, and asks challenging 'why' questions.</p>
+            </div>
+          </div>
+
+          <!-- Right: Chat Board -->
+          <div class="chat-container">
+            <div class="chat-header">
+              <div>
+                <h4 id="chat-buddy-title" class="text-sm font-bold">Emma</h4>
+                <span id="chat-buddy-status" class="text-xs text-slate-400">Ready to chat</span>
+              </div>
+              <div class="input-group" style="margin-bottom: 0; width: 180px;">
+                <input type="text" id="chat-buddy-topic" class="text-input" style="padding: 6px 12px; font-size: 12px;" placeholder="Active Topic: Photosynthesis" value="General">
+              </div>
+            </div>
+
+            <div class="chat-history" id="chat-history-board">
+              <!-- chat messages injected here -->
+            </div>
+
+            <div class="chat-input-area">
+              <input type="text" id="chat-user-message" class="text-input flex-grow" placeholder="Talk to your study buddy...">
+              <button class="btn-primary" id="btn-chat-send" style="padding: 12px 24px;">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. ANALYTICS & LOGS VIEW -->
+      <section id="view-analytics" class="view-panel">
+        <div class="grid-2 mb-6">
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-4">Detailed Analytics</h3>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Current Value</th>
+                    <th>Goal Target</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Total Study Time</td>
+                    <td id="table-total-time" class="font-semibold text-purple-400">0 mins</td>
+                    <td id="table-goal-time">25 mins / day</td>
+                  </tr>
+                  <tr>
+                    <td>Study Streak</td>
+                    <td id="table-streak" class="font-semibold text-orange-400">0 Days</td>
+                    <td>Continuous daily log</td>
+                  </tr>
+                  <tr>
+                    <td>Quizzes Taken</td>
+                    <td id="table-quizzes" class="font-semibold text-cyan-400">0 Tests</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>Tasks Checked Off</td>
+                    <td id="table-tasks-completed" class="font-semibold text-emerald-400">0 Tasks</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quick Stats summaries -->
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-4">Focus Goal Achievement</h3>
+            <div class="flex items-center justify-around" style="height: 180px;">
+              <div class="progress-ring-container">
+                <svg width="140" height="140">
+                  <circle cx="70" cy="70" r="60" stroke="var(--border-light)" stroke-width="8" fill="transparent" />
+                  <circle id="analytics-progress-ring" class="progress-ring-circle" cx="70" cy="70" r="60" stroke="var(--accent-emerald)" stroke-width="8" fill="transparent" stroke-dasharray="377" stroke-dashoffset="377" />
+                </svg>
+                <div class="progress-ring-text" id="analytics-progress-text">0%</div>
+              </div>
+              <div class="flex-column gap-12" style="max-width: 180px;">
+                <h4 class="text-sm font-bold">Goal Progress</h4>
+                <p id="analytics-goal-message" class="text-xs text-slate-400 leading-relaxed">You've completed 0% of your daily study minutes goal. Start a Focus Timer to log sessions!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 class="text-lg font-bold mb-4">Study Session Logs</h3>
+          <div class="table-container" style="max-height: 320px; overflow-y: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Duration</th>
+                  <th>Category</th>
+                  <th>Topic</th>
+                </tr>
+              </thead>
+              <tbody id="analytics-logs-body">
+                <!-- Logs injected here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. SETTINGS VIEW -->
+      <section id="view-settings" class="view-panel">
+        <div class="grid-2">
+          <!-- Configuration -->
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-4">User Profile</h3>
+            
+            <div class="input-group">
+              <label class="input-label" for="settings-username">Display Name</label>
+              <input type="text" id="settings-username" class="text-input" value="Future Scholar">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="settings-level">Study Target Level</label>
+              <select id="settings-level" class="select-input">
+                <option value="School">School Student</option>
+                <option value="College" selected>College Student</option>
+                <option value="Competitive">Competitive Exam Aspirant</option>
+                <option value="Self-Learner">Self-Learner</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="settings-goal">Daily Goal (Minutes)</label>
+              <input type="number" id="settings-goal" class="text-input" min="5" max="360" value="25">
+            </div>
+
+            <button class="btn-primary mt-4" id="btn-settings-save-profile">Save Profile Settings</button>
+          </div>
+
+          <!-- API configuration & Accent color -->
+          <div class="glass-card">
+            <h3 class="text-lg font-bold mb-4">Advanced Configuration</h3>
+            
+            <div class="input-group">
+              <label class="input-label" for="settings-api-key">Google Gemini API Key (Optional)</label>
+              <input type="password" id="settings-api-key" class="text-input" placeholder="AI-generated fallback applies when empty...">
+              <p class="text-xs text-slate-500 mt-2">Your API key is stored securely in your local browser storage and never sent elsewhere.</p>
+            </div>
+
+            <div class="grid-2 gap-12" style="grid-template-columns: 1fr 1fr; margin-top: 16px;">
+              <div class="input-group">
+                <label class="input-label" for="settings-theme">Theme Selection</label>
+                <select id="settings-theme" class="select-input">
+                  <option value="dark" selected>Sleek Dark</option>
+                  <option value="light">Crisp Light</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="settings-accent">Accent Color</label>
+                <select id="settings-accent" class="select-input">
+                  <option value="#8b5cf6">Violet Purple</option>
+                  <option value="#ec4899">Neon Pink</option>
+                  <option value="#06b6d4">Electric Cyan</option>
+                  <option value="#10b981">Emerald Green</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn-primary mt-4" id="btn-settings-save-advanced">Save Configuration</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Include Core Services and Main Scripts -->
+  <script src="data-store.js"></script>
+  <script src="ai-service.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
