@@ -4,45 +4,22 @@
 const StudyAIService = (() => {
 
   // HELPER: Fetch from Gemini REST endpoint.
-  // If a user-provided apiKey exists, calls Google directly.
-  // Otherwise, routes through the secure Netlify serverless proxy
-  // so the site-owner's key is never exposed in the browser.
+  // Only called when the user has entered their own API key in Settings.
+  // Without a key, all features use the rich built-in mock data below.
   async function callGemini(prompt, apiKey) {
-    const requestBody = {
-      contents: [{
-        parts: [{ text: prompt }]
-      }]
-    };
-
-    let url, fetchOptions;
-
-    if (apiKey) {
-      // User has entered their own key in Settings — call Google directly
-      url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      fetchOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      };
-    } else {
-      // No user key — route through our secure server-side proxy.
-      // The real API key lives in Netlify's environment variables, never in this file.
-      url = '/api/gemini';
-      fetchOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      };
-    }
-
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     try {
-      const response = await fetch(url, fetchOptions);
-
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Gemini API Error (${response.status}): ${errorText}`);
       }
-
       const data = await response.json();
       return data.candidates[0].content.parts[0].text;
     } catch (error) {
@@ -162,22 +139,21 @@ const StudyAIService = (() => {
     async generateExplanation(topic, style, apiKey) {
       const cleanTopic = topic.toLowerCase().trim();
 
-      // Always attempt Gemini (proxy for no-key visitors, direct for users with own key)
-      const prompt = `You are a world-class AI Study Coach. Please explain the topic "${topic}" in style "${style}". 
+      if (apiKey) {
+        const prompt = `You are a world-class AI Study Coach. Please explain the topic "${topic}" in style "${style}". 
         The options for style are:
         - "ELI5": Explain like I'm 5 years old. Use simple language, short sentences, and child-friendly metaphors.
         - "Analogy": Use a strong, elaborate real-life analogy or story to clarify the concept.
         - "Deep-Dive": Provide a thorough, academic, detailed explanation with formulas, structures, and historical context if applicable.
         - "Summary": Provide a clean bulleted summary of key takeaways.
-        
         Respond in clean HTML (wrap in a <div>, do NOT include <html> or <body> tags). Use headings (<h3>), bold text (<strong>), lists (<ul>/<li>), or italic tags for styling. Do not write markdown markers around it. Just HTML.`;
-
-      try {
-        let htmlOutput = await callGemini(prompt, apiKey);
-        htmlOutput = htmlOutput.replace(/^```html\s*/i, '').replace(/```$/, '').trim();
-        return htmlOutput;
-      } catch (err) {
-        console.error("Gemini failed, falling back to local simulation.", err);
+        try {
+          let htmlOutput = await callGemini(prompt, apiKey);
+          htmlOutput = htmlOutput.replace(/^```html\s*/i, '').replace(/```$/, '').trim();
+          return htmlOutput;
+        } catch (err) {
+          console.error("Gemini failed, falling back to local simulation.", err);
+        }
       }
 
       // Local Fallback simulation
@@ -197,8 +173,8 @@ const StudyAIService = (() => {
 
     // Generate Study Plan
     async generateStudyPlan(subject, days, hours, apiKey) {
-      // Always attempt Gemini (proxy for no-key visitors, direct for users with own key)
-      const prompt = `You are a world-class AI Study Coach. Generate a personalized, day-by-day study plan checklist for learning the subject "${subject}" in exactly ${days} days, studying ${hours} hours per day. 
+      if (apiKey) {
+        const prompt = `You are a world-class AI Study Coach. Generate a personalized, day-by-day study plan checklist for learning the subject "${subject}" in exactly ${days} days, studying ${hours} hours per day. 
         Provide the output as a JSON list of tasks, for example:
         [
           "Day 1: Read introduction and terminology of ${subject}",
@@ -207,14 +183,14 @@ const StudyAIService = (() => {
           "Day 3: Write a summary and take a mock test"
         ]
         Provide ONLY valid JSON (no surrounding markdown, no extra explanation text, just the raw JSON array).`;
-
-      try {
-        const rawText = await callGemini(prompt, apiKey);
-        const cleanJsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleanJsonText);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (err) {
-        console.error("Gemini study plan failed, falling back.", err);
+        try {
+          const rawText = await callGemini(prompt, apiKey);
+          const cleanJsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanJsonText);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (err) {
+          console.error("Gemini study plan failed, falling back.", err);
+        }
       }
 
       // Local Fallback simulation
@@ -246,10 +222,9 @@ const StudyAIService = (() => {
 
     // Generate Quizzes & Flashcards
     async generateQuizAndFlashcards(topic, apiKey) {
-      // Always attempt Gemini (proxy for no-key visitors, direct for users with own key)
-      const prompt = `You are a world-class AI Study Coach. Generate a mini-quiz and a flashcard deck on the topic "${topic}".
+      if (apiKey) {
+        const prompt = `You are a world-class AI Study Coach. Generate a mini-quiz and a flashcard deck on the topic "${topic}".
         Format the response as a single valid JSON object containing exactly two arrays: "quiz" and "flashcards".
-        
         Structure:
         {
           "quiz": [
@@ -266,19 +241,16 @@ const StudyAIService = (() => {
             }
           ]
         }
-
         Generate exactly 3 quiz questions (MCQs) and 3 flashcards.
         Provide ONLY valid JSON. No markdown backticks, no text before or after the JSON.`;
-
-      try {
-        const rawText = await callGemini(prompt, apiKey);
-        const cleanJsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleanJsonText);
-        if (parsed.quiz && parsed.flashcards) {
-          return parsed;
+        try {
+          const rawText = await callGemini(prompt, apiKey);
+          const cleanJsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleanJsonText);
+          if (parsed.quiz && parsed.flashcards) return parsed;
+        } catch (err) {
+          console.error("Gemini Quiz/Flashcard generation failed, falling back.", err);
         }
-      } catch (err) {
-        console.error("Gemini Quiz/Flashcard generation failed, falling back.", err);
       }
 
       // Local Fallback simulation
@@ -302,22 +274,19 @@ const StudyAIService = (() => {
 
       const systemPrompt = systemPrompts[persona] || systemPrompts.emma;
 
-      // Always attempt Gemini (proxy for no-key visitors, direct for users with own key)
-      const formattedHistory = chatHistory.map(msg => `${msg.sender === 'user' ? 'Student' : 'Study Buddy'}: ${msg.text}`).join('\n');
-      const prompt = `${systemPrompt}
+      if (apiKey) {
+        const formattedHistory = chatHistory.map(msg => `${msg.sender === 'user' ? 'Student' : 'Study Buddy'}: ${msg.text}`).join('\n');
+        const prompt = `${systemPrompt}
         We are studying the topic: "${topic}".
-        
         Recent chat history:
         ${formattedHistory}
-        
         Student's new message: "${message}"
-        
         Respond naturally as this persona. Keep your response concise (1-3 paragraphs max) and conversational.`;
-
-      try {
-        return await callGemini(prompt, apiKey);
-      } catch (err) {
-        console.error("Gemini Study Buddy failed, falling back.", err);
+        try {
+          return await callGemini(prompt, apiKey);
+        } catch (err) {
+          console.error("Gemini Study Buddy failed, falling back.", err);
+        }
       }
 
       // Local Fallback responses based on persona
