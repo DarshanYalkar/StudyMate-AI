@@ -111,7 +111,7 @@ Since StudyMate AI is fully client-side and requires zero build configurations, 
    ```
 3. Open your browser and navigate to:
    ```
-   http://localhost:8000
+   https://darshanyalkar.github.io/StudyMate-AI/
    ```
 
 ### 🔑 (Optional) Add your Gemini API Key
