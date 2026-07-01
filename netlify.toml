@@ -1,0 +1,13 @@
+# netlify.toml
+# Netlify configuration file for StudyMate AI deployment.
+
+[build]
+  # No build command needed — this is a pure static site
+  publish = "."
+  functions = "netlify/functions"
+
+# Redirect rule: proxy API calls from the browser to our serverless function
+[[redirects]]
+  from = "/api/gemini"
+  to = "/.netlify/functions/gemini-proxy"
+  status = 200
